@@ -1,20 +1,41 @@
-import sys
 import os
+import sys
+from colorama import init, Fore, Style
+from database import db
+from utils import Auth, Display
+from portals import AdminPortal, TeacherPortal, StudentPortal
 
-# Add the project root to Python path
-sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-
-from cli.cli import StudentManagementCLI
-from services.student_service import StudentService
-from services.grading_service import GradingService 
-
-if __name__ == '__main__':
-    try:
-        app = StudentManagementCLI()
-        app.run()
-    except KeyboardInterrupt:
-        print("\n\nApplication terminated by user.")
-    except Exception as e:
-        print(f"\nFatal error: {e}")
-        print("Please contact support or check system configuration.")
+def main():
+    init(autoreset=True)
+    
+    if not db.connect():
+        print(f"{Fore.RED}Database connection failed!{Style.RESET_ALL}")
         sys.exit(1)
+    
+    display = Display()
+    
+    try:
+        while True:
+            os.system('cls' if os.name == 'nt' else 'clear')
+            user = Auth.login()
+            
+            if user:
+                if user['role'] == 'admin':
+                    portal = AdminPortal(user)
+                elif user['role'] == 'teacher':
+                    portal = TeacherPortal(user)
+                elif user['role'] == 'student':
+                    portal = StudentPortal(user)
+                
+                portal.show_menu()
+            
+            if input(f"\n{Fore.YELLOW}Login again? (y/n): {Style.RESET_ALL}").lower() != 'y':
+                break
+                
+    except KeyboardInterrupt:
+        print(f"\n{Fore.YELLOW}Goodbye!{Style.RESET_ALL}")
+    finally:
+        db.close()
+
+if __name__ == "__main__":
+    main()

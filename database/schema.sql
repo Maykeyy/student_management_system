@@ -1,76 +1,72 @@
+CREATE DATABASE IF NOT EXISTS lms_db;
+USE lms_db;
 
--- Courses Table
-CREATE TABLE IF NOT EXISTS courses (
-    course_id INT AUTO_INCREMENT PRIMARY KEY,
-    course_code VARCHAR(10) UNIQUE NOT NULL,
-    course_name VARCHAR(100) NOT NULL,
+CREATE TABLE courses (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(100) NOT NULL UNIQUE,
+    description TEXT
+);
+
+CREATE TABLE admins (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id VARCHAR(6) UNIQUE NOT NULL,
+    name VARCHAR(100) NOT NULL,
+    email VARCHAR(100) UNIQUE NOT NULL,
+    password VARCHAR(255) NOT NULL
+);
+
+CREATE TABLE teachers (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id VARCHAR(6) UNIQUE NOT NULL,
+    name VARCHAR(100) NOT NULL,
+    email VARCHAR(100) UNIQUE NOT NULL,
+    password VARCHAR(255) NOT NULL,
+    position VARCHAR(100)
+);
+
+CREATE TABLE students (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id VARCHAR(6) UNIQUE NOT NULL,
+    name VARCHAR(100) NOT NULL,
+    email VARCHAR(100) UNIQUE NOT NULL,
+    password VARCHAR(255) NOT NULL,
+    course_id INT,
+    year_level INT,
+    FOREIGN KEY (course_id) REFERENCES courses(id)
+);
+
+CREATE TABLE subjects (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    code VARCHAR(20) UNIQUE NOT NULL,
+    name VARCHAR(100) NOT NULL,
     description TEXT,
-    credits INT DEFAULT 3,
-    is_active BOOLEAN DEFAULT TRUE,
+    teacher_id INT,
+    course_id INT,
+    FOREIGN KEY (teacher_id) REFERENCES teachers(id),
+    FOREIGN KEY (course_id) REFERENCES courses(id)
+);
+
+CREATE TABLE enrollments (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    student_id INT,
+    subject_id INT,
+    status ENUM('pending', 'approved', 'denied') DEFAULT 'pending',
+    enrolled_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (student_id) REFERENCES students(id),
+    FOREIGN KEY (subject_id) REFERENCES subjects(id),
+    UNIQUE KEY unique_enrollment (student_id, subject_id)
+);
+
+CREATE TABLE grades (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    enrollment_id INT,
+    grade DECIMAL(3,2),
+    remarks TEXT,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-) ENGINE=InnoDB;
+    FOREIGN KEY (enrollment_id) REFERENCES enrollments(id)
+);
 
--- Students Table
-CREATE TABLE IF NOT EXISTS students (
-    student_id CHAR(8) PRIMARY KEY,
-    full_name VARCHAR(255) NOT NULL,
-    email VARCHAR(255),
-    course_id INT NOT NULL,
-    year_level TINYINT CHECK (year_level BETWEEN 1 AND 4),
-    status ENUM('active', 'inactive', 'graduated') DEFAULT 'active',
-    enrollment_date DATE DEFAULT CURRENT_DATE,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    FOREIGN KEY (course_id) REFERENCES courses(course_id)
-) ENGINE=InnoDB;
-
--- Grade Settings Table (uses DECIMAL instead of FLOAT to support accurate constraint)
-CREATE TABLE IF NOT EXISTS grade_settings (
-    id INT PRIMARY KEY DEFAULT 1,
-    quiz_weight DECIMAL(5,4) DEFAULT 0.3000,
-    activity_weight DECIMAL(5,4) DEFAULT 0.3000,
-    exam_weight DECIMAL(5,4) DEFAULT 0.4000,
-    passing_grade DECIMAL(5,2) DEFAULT 60.00,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    CHECK (quiz_weight + activity_weight + exam_weight = 1.0000)
-) ENGINE=InnoDB;
-
--- Grades Table (no subquery in generated column; calculated externally)
-CREATE TABLE IF NOT EXISTS grades (
-    grade_id INT AUTO_INCREMENT PRIMARY KEY,
-    student_id CHAR(8) NOT NULL,
-    quiz FLOAT DEFAULT 0,
-    activity FLOAT DEFAULT 0,
-    exam FLOAT DEFAULT 0,
-    final_score FLOAT DEFAULT 0, -- manually calculated in app or via trigger
-    letter_grade CHAR(2),
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    FOREIGN KEY (student_id) REFERENCES students(student_id) ON DELETE CASCADE
-) ENGINE=InnoDB;
-
--- Grade Audit Log
-CREATE TABLE IF NOT EXISTS grade_audit (
-    audit_id INT AUTO_INCREMENT PRIMARY KEY,
-    student_id CHAR(8) NOT NULL,
-    grade_type ENUM('quiz', 'activity', 'exam') NOT NULL,
-    old_value FLOAT,
-    new_value FLOAT,
-    changed_by VARCHAR(100),
-    changed_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (student_id) REFERENCES students(student_id)
-) ENGINE=InnoDB;
-
--- Users Table
-CREATE TABLE IF NOT EXISTS users (
-    user_id INT AUTO_INCREMENT PRIMARY KEY,
-    username VARCHAR(50) UNIQUE NOT NULL,
-    password_hash VARCHAR(255) NOT NULL,
-    role ENUM('admin', 'teacher', 'registrar') DEFAULT 'teacher',
-    full_name VARCHAR(255) NOT NULL,
-    is_active BOOLEAN DEFAULT TRUE,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-) ENGINE=InnoDB;
-
-
+INSERT INTO admins (user_id, name, email, password) VALUES ('000001', 'System Admin', 'admin@lms.com', 'admin123');
+INSERT INTO courses (name, description) VALUES 
+('Computer Science', 'Bachelor of Science in Computer Science'),
+('Information Technology', 'Bachelor of Science in Information Technology');

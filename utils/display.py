@@ -1,115 +1,36 @@
-# ==============================================================================
-# UTILITIES (utils/display.py)
-# ==============================================================================
+from colorama import Fore, Style
 
-from typing import List, Any, Dict
-import math
-from models.student import Student
-from models.grade import Grade
-
-
-class DisplayHelper:
+class Display:
     @staticmethod
-    def print_header(title: str, width: int = 80, char: str = "="):
-        """Print formatted header"""
-        print(f"\n{title.center(width, char)}")
+    def header(title):
+        print(f"\n{Fore.CYAN}{'='*60}")
+        print(f"{Fore.YELLOW}{title.center(60)}")
+        print(f"{Fore.CYAN}{'='*60}{Style.RESET_ALL}")
 
     @staticmethod
-    def print_subheader(title: str, width: int = 80, char: str = "-"):
-        """Print formatted subheader"""
-        print(f"{title.center(width, char)}")
+    def menu(options):
+        print(f"\n{Fore.MAGENTA}Choose an option:{Style.RESET_ALL}")
+        for i, option in enumerate(options, 1):
+            print(f"{Fore.WHITE}{i}. {option}{Style.RESET_ALL}")
+        print(f"{Fore.WHITE}0. Exit{Style.RESET_ALL}")
 
     @staticmethod
-    def print_table(headers: List[str], rows: List[List[Any]], max_width: int = 120):
-        """Print formatted table with proper column alignment"""
-        if not rows:
-            print("No data to display.")
-            return
-
-        # Calculate column widths
-        widths = [len(str(h)) for h in headers]
-        for row in rows:
-            for i, cell in enumerate(row):
-                if i < len(widths):
-                    widths[i] = max(widths[i], len(str(cell)))
-
-        # Adjust widths if total exceeds max_width
-        total_width = sum(widths) + (len(headers) - 1) * 3
-        if total_width > max_width:
-            scale = (max_width - (len(headers) - 1) * 3) / sum(widths)
-            widths = [max(8, int(w * scale)) for w in widths]
-
-        # Print header
-        header_line = " | ".join(h.ljust(widths[i]) for i, h in enumerate(headers))
-        separator = "-+-".join("-" * widths[i] for i in range(len(headers)))
-
-        print("\n" + header_line)
-        print(separator)
-
-        # Print rows
-        for row in rows:
-            formatted_row = []
-            for i, cell in enumerate(row):
-                if i < len(widths):
-                    cell_str = str(cell)
-                    if len(cell_str) > widths[i]:
-                        cell_str = cell_str[:widths[i]-3] + "..."
-                    formatted_row.append(cell_str.ljust(widths[i]))
-            print(" | ".join(formatted_row))
+    def success(message):
+        print(f"{Fore.GREEN}✓ {message}{Style.RESET_ALL}")
 
     @staticmethod
-    def print_student_list(students: List[Student], show_grades: bool = False):
-        """Print formatted student list"""
-        if not students:
-            print("No students found.")
-            return
-
-        if show_grades:
-            headers = ["ID", "Name", "Course", "Year", "Quiz", "Activity", "Exam", "Final", "Grade"]
-            rows = []
-            for student in students:
-                grade = Grade.find_by_student_id(student.student_id)
-                if grade:
-                    rows.append([
-                        student.student_id, student.full_name, student.course_code,
-                        student.year_level, grade.quiz, grade.activity, grade.exam,
-                        grade.final_score or "N/A", grade.letter_grade or "N/A"
-                    ])
-                else:
-                    rows.append([
-                        student.student_id, student.full_name, student.course_code,
-                        student.year_level, "N/A", "N/A", "N/A", "N/A", "N/A"
-                    ])
-        else:
-            headers = ["ID", "Name", "Course", "Year", "Email", "Status"]
-            rows = [[s.student_id, s.full_name, s.course_code, s.year_level,
-                    s.email or "N/A", s.status] for s in students]
-
-        DisplayHelper.print_table(headers, rows)
+    def error(message):
+        print(f"{Fore.RED}✗ {message}{Style.RESET_ALL}")
 
     @staticmethod
-    def print_grade_report(grades: List[Grade]):
-        """Print formatted grade report"""
-        if not grades:
-            print("No grades found.")
-            return
-
-        headers = ["Rank", "ID", "Name", "Course", "Quiz", "Activity", "Exam", "Final", "Grade"]
-        rows = []
-        for i, grade in enumerate(grades, 1):
-            rows.append([
-                i, grade.student_id, grade.student_name, grade.course_code,
-                grade.quiz, grade.activity, grade.exam,
-                grade.final_score or "N/A", grade.letter_grade or "N/A"
-            ])
-
-        DisplayHelper.print_table(headers, rows)
+    def info(message):
+        print(f"{Fore.BLUE}ℹ {message}{Style.RESET_ALL}")
 
     @staticmethod
-    def print_statistics(stats: Dict[str, Any], title: str = "Statistics"):
-        """Print formatted statistics"""
-        DisplayHelper.print_subheader(title)
-        for key, value in stats.items():
-            formatted_key = key.replace('_', ' ').title()
-            print(f"{formatted_key:.<30} {value}")
-        print()
+    def table_header(headers):
+        print(f"\n{Fore.YELLOW}{' | '.join(f'{h:^15}' for h in headers)}{Style.RESET_ALL}")
+        print(f"{Fore.CYAN}{'-'*15*len(headers)}{Style.RESET_ALL}")
+
+    @staticmethod
+    def table_row(data):
+        print(f"{Fore.WHITE}{' | '.join(f'{str(d):^15}' for d in data)}{Style.RESET_ALL}")
