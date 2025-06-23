@@ -6,7 +6,7 @@ class Auth:
     @staticmethod
     def login():
         print(f"{Fore.CYAN}{'='*50}")
-        print(f"{Fore.YELLOW}           LMS LOGIN SYSTEM")
+        print(f"{Fore.YELLOW}           MANA UNIVERSITY PORTAL LOGIN           {Style.RESET_ALL}")
         print(f"{Fore.CYAN}{'='*50}{Style.RESET_ALL}")
         
         user_id = input(f"{Fore.GREEN}Enter 6-digit ID: {Style.RESET_ALL}")

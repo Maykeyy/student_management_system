@@ -16,10 +16,11 @@
 2. **Configure MySQL Database**
 
    - Start XAMPP
-   - Import the MySQL Queries to the Xampp from the `database/schema.sql` to be able to create the database and tables.
-   - Update database credentials in `database/connection.py`:
+   - Create Database called `lms_db`.
+   - Import the Queries `database/lms_db.sql` to the database just created to be able to create the tables.
 
 3. **Run Application**
+   - Go to CMD and run this the command below:
    ```bash
    python main.py
    ```

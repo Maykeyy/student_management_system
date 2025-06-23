@@ -86,7 +86,7 @@ class TeacherPortal:
         course_id = input("New Course ID: ")
         
         result = Subject.update(subject_id, code, name, description, course_id)
-        if result:
+        if result is not None:
             self.display.success("Subject updated successfully!")
         else:
             self.display.error("Failed to update subject")
@@ -97,7 +97,7 @@ class TeacherPortal:
         subject_id = input("Enter Subject ID to delete: ")
         
         result = Subject.delete(subject_id)
-        if result:
+        if result is not None:
             self.display.success("Subject deleted successfully!")
         else:
             self.display.error("Failed to delete subject")
@@ -143,7 +143,7 @@ class TeacherPortal:
         
         if status in ['approved', 'denied']:
             result = Enrollment.update_status(enrollment_id, status)
-            if result:
+            if result is not None:
                 self.display.success(f"Enrollment {status} successfully!")
             else:
                 self.display.error("Failed to update enrollment")
@@ -170,9 +170,13 @@ class TeacherPortal:
     def view_enrolled_students(self):
         students = Enrollment.get_approved_by_teacher(self.teacher_id)
         if students:
-            self.display.table_header(["Enrollment ID", "Student", "Subject Code", "Subject Name"])
+            self.display.table_header(["Enrollment ID", "Student", "Subject Code", "Subject Name", "Grade"])
             for s in students:
-                self.display.table_row([s[0], s[1], s[2], s[3]])
+                # s[0] = enrollment_id
+                from models.grade import Grade
+                grade_row = Grade.get_by_enrollment(s[0])
+                grade_display = f"{grade_row[0]:.2f}" if grade_row and grade_row[0] is not None else "N/A"
+                self.display.table_row([s[0], s[1], s[2], s[3], grade_display])
         else:
             self.display.info("No enrolled students")
         input("\nPress Enter to continue...")
@@ -187,7 +191,7 @@ class TeacherPortal:
             grade_val = float(grade)
             if 0 <= grade_val <= 100:
                 result = Grade.create_or_update(enrollment_id, grade_val, remarks)
-                if result:
+                if result is not None:
                     self.display.success("Grade saved successfully!")
                 else:
                     self.display.error("Failed to save grade")
