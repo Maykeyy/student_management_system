@@ -26,7 +26,11 @@ class Database:
         try:
             cursor.execute(query, params)
             self.connection.commit()
-            return cursor.lastrowid
+
+            if query.strip().upper().startswith("INSERT"):
+                return cursor.lastrowid
+            else:
+                return cursor.rowcount
         except Error:
             self.connection.rollback()
             return None

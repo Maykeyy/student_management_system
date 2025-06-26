@@ -242,11 +242,12 @@ class AdminPortal:
             input("\nPress Enter to continue...")
             return
         result = Admin.delete_student(user_id)
-        if result is not None:
+        if result and result > 0:
             self.display.success("Student deleted successfully!")
         else:
             self.display.error("Failed to delete student")
         input("\nPress Enter to continue...")
+
 
     # --- Course Management ---
     def manage_courses(self):
