@@ -9,7 +9,7 @@
 1. **Install**
 
    - Navigate to the project folder using CMD `example: cd users/ian/etcetc`
-   - If already in the Project folder, Run: `pip install -r requirements.txt`
+   - Run: `pip install -r requirements.txt` or `python -m pip install -r requirements.txt` or `py -m pip install -r requirements.txt`
 
 2. **Configure MySQL Database**
 
@@ -18,7 +18,7 @@
    - Import the file from `database/lms_db.sql` to the database just created.
 
 3. **Run Application**
-   - In CMD, run: `python main.py`
+   - In CMD, run: `python main.py` or `py main.py`
 
 **ADMIN CREDENTIALS TO ACCESS ADMIN SIDE:**
 

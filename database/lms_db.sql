@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jun 23, 2025 at 06:32 PM
+-- Generation Time: Jun 26, 2025 at 04:09 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -82,9 +82,7 @@ CREATE TABLE `enrollments` (
 --
 
 INSERT INTO `enrollments` (`id`, `student_id`, `subject_id`, `status`, `enrolled_at`) VALUES
-(1, 2, 3, 'approved', '2025-06-23 16:06:40'),
-(3, 5, 3, 'approved', '2025-06-23 16:21:26'),
-(4, 2, 4, 'approved', '2025-06-23 16:28:30');
+(7, 5, 3, 'approved', '2025-06-26 14:03:55');
 
 -- --------------------------------------------------------
 
@@ -96,6 +94,14 @@ CREATE TABLE `grades` (
   `id` int(11) NOT NULL,
   `enrollment_id` int(11) DEFAULT NULL,
   `grade` decimal(5,2) DEFAULT NULL,
+  `activity_score` decimal(5,2) DEFAULT NULL,
+  `quiz_score` decimal(5,2) DEFAULT NULL,
+  `exam_score` decimal(5,2) DEFAULT NULL,
+  `activity_weight` decimal(5,2) DEFAULT 40.00,
+  `quiz_weight` decimal(5,2) DEFAULT 20.00,
+  `exam_weight` decimal(5,2) DEFAULT 40.00,
+  `final_grade` decimal(5,2) DEFAULT NULL,
+  `is_component_based` tinyint(1) DEFAULT 0,
   `remarks` text DEFAULT NULL,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
@@ -104,10 +110,8 @@ CREATE TABLE `grades` (
 -- Dumping data for table `grades`
 --
 
-INSERT INTO `grades` (`id`, `enrollment_id`, `grade`, `remarks`, `created_at`) VALUES
-(1, 1, 100.00, 'PASSS', '2025-06-23 16:09:43'),
-(2, 3, 10.00, 'FAILED', '2025-06-23 16:22:47'),
-(3, 4, 99.99, 'PASSED', '2025-06-23 16:29:36');
+INSERT INTO `grades` (`id`, `enrollment_id`, `grade`, `activity_score`, `quiz_score`, `exam_score`, `activity_weight`, `quiz_weight`, `exam_weight`, `final_grade`, `is_component_based`, `remarks`, `created_at`) VALUES
+(4, 7, NULL, 90.00, 94.00, 95.00, 40.00, 20.00, 40.00, 92.80, 1, 'Passed', '2025-06-26 14:05:48');
 
 -- --------------------------------------------------------
 
@@ -258,19 +262,19 @@ ALTER TABLE `courses`
 -- AUTO_INCREMENT for table `enrollments`
 --
 ALTER TABLE `enrollments`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- AUTO_INCREMENT for table `grades`
 --
 ALTER TABLE `grades`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `students`
 --
 ALTER TABLE `students`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- AUTO_INCREMENT for table `subjects`
@@ -282,7 +286,7 @@ ALTER TABLE `subjects`
 -- AUTO_INCREMENT for table `teachers`
 --
 ALTER TABLE `teachers`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- Constraints for dumped tables
