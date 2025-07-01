@@ -208,26 +208,22 @@ class TeacherPortal:
         
         # Get current grade data if exists
         current_grade = Grade.get_detailed_by_enrollment(enrollment_id)
-        
-        # Activity Score
+  
         activity_default = current_grade['activity_score'] if current_grade and current_grade['activity_score'] is not None else ""
         activity_score = input(f"Activity Score (0-100) [{activity_default}]: ").strip()
         if not activity_score and activity_default:
             activity_score = str(activity_default)
-        
-        # Quiz Score
+
         quiz_default = current_grade['quiz_score'] if current_grade and current_grade['quiz_score'] is not None else ""
         quiz_score = input(f"Quiz Score (0-100) [{quiz_default}]: ").strip()
         if not quiz_score and quiz_default:
             quiz_score = str(quiz_default)
         
-        # Exam Score
         exam_default = current_grade['exam_score'] if current_grade and current_grade['exam_score'] is not None else ""
         exam_score = input(f"Exam Score (0-100) [{exam_default}]: ").strip()
         if not exam_score and exam_default:
             exam_score = str(exam_default)
-        
-        # Weights (optional customization)
+
         print("\n--- Weight Configuration (Optional) ---")
         activity_weight_default = current_grade['activity_weight'] if current_grade and current_grade['activity_weight'] is not None else 40.0
         quiz_weight_default = current_grade['quiz_weight'] if current_grade and current_grade['quiz_weight'] is not None else 20.0
