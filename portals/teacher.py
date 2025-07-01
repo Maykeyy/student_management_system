@@ -253,7 +253,6 @@ class TeacherPortal:
             quiz_weight_val = float(quiz_weight)
             exam_weight_val = float(exam_weight)
             
-            # Validate scores
             if not (0 <= activity_val <= 100 and 0 <= quiz_val <= 100 and 0 <= exam_val <= 100):
                 self.display.error("All scores must be between 0-100")
                 input("\nPress Enter to continue...")

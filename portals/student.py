@@ -123,7 +123,6 @@ class StudentPortal:
                     print(f"Grade: {g[2]:.2f}")
                     print(f"Remarks: {g[3] or 'N/A'}")
                     
-                    # Add to GPA calculation
                     total_weighted_grade += g[2]
                     if g[2] >= 75:
                         passed_subjects += 1
