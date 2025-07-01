@@ -66,8 +66,6 @@ class StudentPortal:
         if grades:
             self.display.table_header(["Subject Code", "Subject Name", "Final Grade", "Remarks", "Type"])
             for g in grades:
-                # g structure: code, name, legacy_grade, remarks, activity_score, quiz_score, exam_score, 
-                # activity_weight, quiz_weight, exam_weight, final_grade, is_component_based
                 if g[11]:  # is_component_based
                     final_grade = f"{g[10]:.2f}" if g[10] is not None else "N/A"
                     grade_type = "Component"
